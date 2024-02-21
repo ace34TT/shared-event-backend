@@ -11,7 +11,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "express-list-routes": "^1.1.9"
+    "express-list-routes": "^1.1.9",
+    "twilio": "^4.22.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
