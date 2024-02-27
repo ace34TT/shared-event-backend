@@ -30,6 +30,7 @@ app.post("/api/messages/send", async (req: Request, res: Response) => {
         message: "url and contacts are required",
       });
     }
+    console.log(contacts);
     twilio.messages
       .create({
         body: `
