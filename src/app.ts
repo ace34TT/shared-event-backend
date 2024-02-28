@@ -31,21 +31,27 @@ app.post("/api/messages/send", async (req: Request, res: Response) => {
       });
     }
     console.log(contacts);
-    twilio.messages
-      .create({
-        body: `
+    contacts.forEach((contact: string) => {
+      try {
+        twilio.messages
+          .create({
+            body: `
           Hello , upload your photo here : 
           ${url}
         `,
-        to: contacts,
-        from: "+15169793385", // From a valid Twilio number
-      })
-      .then((message: { sid: any }) => console.log(message.sid));
+            to: contact,
+            from: "+18443875819",
+          })
+          .then((message: { sid: any }) => console.log(message.sid))
+          .catch((error: any) => console.log(error));
+      } catch (error: any) {
+        throw new Error(error.message);
+      }
+    });
     return res.status(200).json({
       message: "hello world",
     });
   } catch (error: any) {
-    // console.log(error);
     console.trace(error);
     return res.status(500).send("internal error: " + error.message);
   }
