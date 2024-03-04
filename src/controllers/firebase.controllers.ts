@@ -6,11 +6,11 @@ const firestore = firebase.firestore();
 
 export const insertDataHandler = async (req: Request, res: Response) => {
   try {
-    const [collectionName, data] = [req.body.collectionName, req.body.data];
-    if (!collectionName || !data) {
+    const [collection, data] = [req.body.collection, req.body.data];
+    if (!collection || !data) {
       throw new Error("Invalid data");
     }
-    const docRef = await firestore.collection(collectionName).add(data);
+    const docRef = await firestore.collection(collection).add(data);
     console.log("document inserted with id : ", docRef.id);
     return res.status(200).json({
       id: docRef.id,
@@ -23,14 +23,11 @@ export const insertDataHandler = async (req: Request, res: Response) => {
 export const findDataHandler = async (req: Request, res: Response) => {
   try {
     console.log("finding");
-    const [collectionName, conditions] = [
-      req.body.collectionName,
-      req.body.conditions,
-    ];
-    if (!collectionName) {
+    const [collection, conditions] = [req.body.collection, req.body.conditions];
+    if (!collection) {
       throw new Error("Invalid data");
     }
-    let query: Query = firestore.collection(collectionName);
+    let query: Query = firestore.collection(collection);
     conditions.forEach((condition: any) => {
       query = query.where(condition.field, condition.operator, condition.value);
     });
@@ -52,14 +49,14 @@ export const findDataHandler = async (req: Request, res: Response) => {
 export const updateDataHandler = async (req: Request, res: Response) => {
   try {
     console.log("updating");
-    const [collectionName, docId, data] = [
-      req.body.collectionName,
+    const [collection, docId, data] = [
+      req.body.collection,
       req.body.docId,
       req.body.data,
     ];
-    console.log(collectionName, docId, data);
+    console.log(collection, docId, data);
 
-    const docRef = firestore.collection(collectionName).doc(docId);
+    const docRef = firestore.collection(collection).doc(docId);
     // Update the document
     await docRef.update(data);
 
@@ -71,13 +68,10 @@ export const updateDataHandler = async (req: Request, res: Response) => {
 };
 export const findDocumentById = async (req: Request, res: Response) => {
   try {
-    const [collectionName, documentId] = [
-      req.body.collectionName,
-      req.body.docId,
-    ];
-    console.log(collectionName, documentId);
+    const [collection, documentId] = [req.body.collection, req.body.docId];
+    console.log(collection, documentId);
 
-    const docRef = firestore.collection(collectionName).doc(documentId);
+    const docRef = firestore.collection(collection).doc(documentId);
     // Get the document
     const doc = await docRef.get();
 
@@ -100,8 +94,8 @@ export const deleteDocumentByIdHandler = async (
   res: Response
 ) => {
   try {
-    const [collectionName, docId] = [req.body.collectionName, req.body.docId];
-    const docRef = firestore.collection(collectionName).doc(docId);
+    const [collection, docId] = [req.body.collection, req.body.docId];
+    const docRef = firestore.collection(collection).doc(docId);
     docRef.delete();
     return res.status(200).send("document deleted successfully");
   } catch (error) {

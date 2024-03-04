@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import twilio from "./configs/twilio.configs";
+import { FirebaseRoutes } from "./routes/firebase.routes";
 const app = express();
 app.use(
   cors({
@@ -22,6 +23,7 @@ app.post("/", async (req: Request, res: Response) => {
   }
 });
 
+app.use("/api/firebase", FirebaseRoutes);
 app.post("/api/messages/send", async (req: Request, res: Response) => {
   try {
     const [url, contacts] = [req.body.url, req.body.contacts];
