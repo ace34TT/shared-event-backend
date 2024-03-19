@@ -1,3 +1,4 @@
 /node_modules
 /.env
 /src/configs/shared-events-efca0-firebase-adminsdk-o7ehn-739c7d3c1f.json
+/dist

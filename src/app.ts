@@ -63,13 +63,13 @@ app.post("/api/messages/send", async (req: Request, res: Response) => {
         twilio.messages
           .create({
             body: `
-              Hello , 
+ Hello , 
 
-              You have been invited by ${host} to attend ${eventName} at ${place} the ${date}
-              Here you guest code : ${eventId}
-              App's link : ${eventLink} 
+You have been invited by ${host} to attend ${eventName} at ${place} the ${date}
+Here you guest code : ${eventId}
+App's link : ${eventLink} 
 
-              See you there .
+See you there .
         `,
             to: contact,
             from: "+18443875819",
