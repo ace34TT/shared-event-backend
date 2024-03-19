@@ -4,6 +4,7 @@ import cors from "cors";
 import twilio from "./configs/twilio.configs";
 import { FirebaseRoutes } from "./routes/firebase.routes";
 import { sendMail } from "./configs/nodemail.configs";
+import { SubscriptionRoutes } from "./routes/subscription.routes";
 const app = express();
 app.use(
   cors({
@@ -25,6 +26,7 @@ app.post("/", async (req: Request, res: Response) => {
 });
 
 app.use("/api/firebase", FirebaseRoutes);
+app.use("/api/subscriptions", SubscriptionRoutes);
 app.post("/api/messages/send", async (req: Request, res: Response) => {
   try {
     const [contacts, emails, host, eventName, place, date, eventId, eventLink] =
