@@ -71,15 +71,15 @@ export const findDocumentById = async (req: Request, res: Response) => {
     const [collection, documentId] = [req.body.collection, req.body.docId];
     console.log(collection, documentId);
     const docRef = firestore.collection(collection).doc(documentId);
-    // Get the document
     const doc = await docRef.get();
-
+    console.log(doc.exists);
     if (doc.exists) {
       return res.status(200).json({
         data: doc.data(),
       });
     } else {
-      return res.status(500).json({
+      console.log("document not found");
+      return res.status(404).json({
         message: "No such document!",
       });
     }
