@@ -1,8 +1,11 @@
 import fs from "fs";
 import path from "path";
 import axios from "axios";
-import ffmpeg from "fluent-ffmpeg";
 const tempDirectory = path.resolve(__dirname, "../tmp/");
+
+import * as ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
+import ffmpeg from "fluent-ffmpeg";
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 export const convertFile = async (file: string) => {
   const outputName = generateRandomString(10) + ".mp4";
