@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { firebase } from "../configs/fireabse.configs";
+import { firebase } from "../configs/firebase.configs";
 const firestore = firebase.firestore();
 
 export const handleSetUserSubscription = (req: Request, res: Response) => {

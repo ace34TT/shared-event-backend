@@ -5,6 +5,10 @@ import twilio from "./configs/twilio.configs";
 import { FirebaseRoutes } from "./routes/firebase.routes";
 import { sendMail } from "./configs/nodemail.configs";
 import { SubscriptionRoutes } from "./routes/subscription.routes";
+import { convertFile, deleteFile, fetchFile } from "./helpers/file.helper";
+import { uploadFileToFirebase } from "./helpers/firebase.helper";
+import { firebase } from "./configs/firebase.configs";
+
 const app = express();
 app.use(
   cors({
@@ -93,5 +97,33 @@ See you there .
     return res.status(500).send("internal error: " + error.message);
   }
 });
+app.post("/api/upload-video", async (req, res) => {
+  try {
+    const downloadedFile = (await fetchFile(
+      "d",
+      req.body.file,
+      req.body.extension
+    )) as string;
 
+    const convertedFile = await convertFile(downloadedFile);
+    const fbFileUrl = await uploadFileToFirebase(
+      convertedFile,
+      req.body.eventId
+    );
+    //
+    const firestore = firebase.firestore();
+    await firestore.collection("images").add({
+      event: req.body.eventId,
+      url: fbFileUrl,
+      filename: convertedFile,
+      type: "video",
+      created_at: Date.now(),
+    });
+    deleteFile(downloadedFile);
+    deleteFile(convertedFile);
+    return res.status(200).send("Process done!");
+  } catch (error: any) {
+    res.send(error.message);
+  }
+});
 export { app };

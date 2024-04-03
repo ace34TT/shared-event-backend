@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { firebase } from "../configs/fireabse.configs";
+import { firebase } from "../configs/firebase.configs";
 import { Query } from "@google-cloud/firestore";
 
 const firestore = firebase.firestore();
