@@ -99,6 +99,7 @@ See you there .
 });
 app.post("/api/upload-video", async (req, res) => {
   try {
+    console.log("converting");
     const downloadedFile = (await fetchFile(
       "d",
       req.body.file,
@@ -121,6 +122,8 @@ app.post("/api/upload-video", async (req, res) => {
     });
     deleteFile(downloadedFile);
     deleteFile(convertedFile);
+    console.log("done");
+
     return res.status(200).send("Process done!");
   } catch (error: any) {
     res.send(error.message);
