@@ -12,6 +12,7 @@ export const convertFile = async (file: string) => {
   await new Promise((resolve, reject) => {
     ffmpeg(path.resolve(tempDirectory, file))
       .output(path.resolve(tempDirectory, outputName))
+      .videoCodec("libx264")
       .on("end", function () {
         console.log("conversion ended");
         resolve(path.resolve(tempDirectory, outputName));
