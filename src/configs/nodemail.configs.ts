@@ -37,6 +37,7 @@ export const sendMail = (
     date: any;
     eventId: any;
     eventLink: any;
+    guestCode: string;
   }
 ) => {
   // Specify the email options
@@ -52,6 +53,7 @@ export const sendMail = (
       date: event.date,
       eventId: event.eventId,
       eventLink: event.eventLink,
+      guestCode: event.guestCode,
     },
   };
   // Send the email

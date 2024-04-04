@@ -55,11 +55,9 @@ export const updateDataHandler = async (req: Request, res: Response) => {
       req.body.data,
     ];
     console.log(collection, docId, data);
-
     const docRef = firestore.collection(collection).doc(docId);
     // Update the document
     await docRef.update(data);
-
     return res.status(200).send("document updated successfully");
   } catch (error) {
     console.log(error);
@@ -99,6 +97,33 @@ export const deleteDocumentByIdHandler = async (
     return res.status(200).send("document deleted successfully");
   } catch (error) {
     console.log(error);
+    res.status(500).send(error);
+  }
+};
+
+//
+export const checkEventHandler = async (req: Request, res: Response) => {
+  try {
+    console.log("starting the process");
+
+    const doc = await firestore
+      .collection("events")
+      .doc(req.body.eventId)
+      .get();
+    console.log("done");
+
+    if (doc.exists && doc.data()!.guestCode === req.body.guestCode) {
+      return res.status(200).json({
+        status: true,
+      });
+    } else {
+      console.log("No such document or doesn't meet the criteria!");
+      return res.status(404).json({
+        message: "No such document or doesn't meet the criteria!",
+      });
+    }
+  } catch (error) {
+    console.error("Error in checkEvent: ", error);
     res.status(500).send(error);
   }
 };

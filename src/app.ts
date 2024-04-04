@@ -33,17 +33,27 @@ app.use("/api/firebase", FirebaseRoutes);
 app.use("/api/subscriptions", SubscriptionRoutes);
 app.post("/api/messages/send", async (req: Request, res: Response) => {
   try {
-    const [contacts, emails, host, eventName, place, date, eventId, eventLink] =
-      [
-        req.body.contacts,
-        req.body.emails,
-        req.body.hostName,
-        req.body.name,
-        req.body.place,
-        req.body.date,
-        req.body.eventId,
-        req.body.url,
-      ];
+    const [
+      contacts,
+      emails,
+      host,
+      eventName,
+      place,
+      date,
+      eventId,
+      eventLink,
+      guestCode,
+    ] = [
+      req.body.contacts,
+      req.body.emails,
+      req.body.hostName,
+      req.body.name,
+      req.body.place,
+      req.body.date,
+      req.body.eventId,
+      req.body.url,
+      req.body.guestCode,
+    ];
 
     console.log(req.body);
 
@@ -55,7 +65,8 @@ app.post("/api/messages/send", async (req: Request, res: Response) => {
       !eventId ||
       !eventLink ||
       !contacts ||
-      !emails
+      !emails ||
+      !guestCode
     ) {
       return res.status(400).json({
         message: "url and contacts are required",
@@ -72,7 +83,8 @@ app.post("/api/messages/send", async (req: Request, res: Response) => {
  Hello , 
 
 You have been invited by ${host} to attend ${eventName} at ${place} the ${date}
-Here you guest code : ${eventId}
+Guest code : ${guestCode}
+Event ID : ${eventId}
 App's link : ${eventLink} 
 
 See you there .
@@ -87,7 +99,15 @@ See you there .
       }
     });
     emails.forEach((email: string) => {
-      sendMail(email, { host, eventName, place, date, eventId, eventLink });
+      sendMail(email, {
+        host,
+        eventName,
+        place,
+        date,
+        eventId,
+        eventLink,
+        guestCode,
+      });
     });
     return res.status(200).json({
       message: "hello world",
