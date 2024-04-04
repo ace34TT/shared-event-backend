@@ -9,13 +9,15 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 export const convertFile = async (file: string) => {
   const outputName = generateRandomString(10) + ".mp4";
+  const thumbnailName = generateRandomString(10) + ".jpg";
+
   await new Promise((resolve, reject) => {
     ffmpeg(path.resolve(tempDirectory, file))
       .output(path.resolve(tempDirectory, outputName))
       .videoCodec("libx264")
       .on("end", function () {
         console.log("conversion ended");
-        resolve(path.resolve(tempDirectory, outputName));
+        resolve(outputName);
       })
       .on("error", function (err: any) {
         console.log("error: ", err);
@@ -23,7 +25,27 @@ export const convertFile = async (file: string) => {
       })
       .run();
   });
-  return outputName;
+  await new Promise((resolve, reject) => {
+    ffmpeg(path.resolve(tempDirectory, file))
+      .screenshots({
+        timestamps: ["00:00:01"],
+        filename: thumbnailName,
+        folder: tempDirectory,
+        size: "320x240",
+      })
+      .on("end", function () {
+        console.log("Thumbnail created");
+        resolve(thumbnailName);
+      })
+      .on("error", function (err) {
+        console.log("An error occurred: " + err.message);
+        reject(err);
+      });
+  });
+  return {
+    outputName,
+    thumbnailName,
+  };
 };
 
 export const folderGuard = () => {

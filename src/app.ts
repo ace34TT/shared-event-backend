@@ -106,26 +106,34 @@ app.post("/api/upload-video", async (req, res) => {
       req.body.extension
     )) as string;
 
-    const convertedFile = await convertFile(downloadedFile);
+    const videoData = await convertFile(downloadedFile);
+    console.log("converting done");
+
     const fbFileUrl = await uploadFileToFirebase(
-      convertedFile,
+      videoData.outputName,
       req.body.eventId
     );
-    //
+    const fbThumbnailUrl = await uploadFileToFirebase(
+      videoData.thumbnailName,
+      req.body.eventId
+    );
     const firestore = firebase.firestore();
     await firestore.collection("images").add({
       event: req.body.eventId,
-      url: fbFileUrl,
-      filename: convertedFile,
+      videoUrl: fbFileUrl,
+      videoName: videoData.outputName,
+      thumbnailUrl: fbThumbnailUrl,
+      thumbnailName: videoData.thumbnailName,
       type: "video",
       created_at: Date.now(),
     });
     deleteFile(downloadedFile);
-    deleteFile(convertedFile);
+    deleteFile(videoData.outputName);
+    deleteFile(videoData.thumbnailName);
     console.log("done");
-
     return res.status(200).send("Process done!");
   } catch (error: any) {
+    console.log(error);
     res.send(error.message);
   }
 });
