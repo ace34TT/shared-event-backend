@@ -32,7 +32,7 @@ export const convertFile = async (file: string) => {
       });
   });
   return {
-    outputName: file,
+    outputName: outputName,
     thumbnailName,
   };
 };
