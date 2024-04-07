@@ -5,28 +5,17 @@ const tempDirectory = path.resolve(__dirname, "../tmp/");
 
 import * as ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 import ffmpeg from "fluent-ffmpeg";
+import util from "util";
+const exec = util.promisify(require("child_process").exec);
+
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 export const convertFile = async (file: string) => {
   const outputName = generateRandomString(10) + ".mp4";
   const thumbnailName = generateRandomString(10) + ".jpg";
-
+  await runCommand(file, outputName);
   await new Promise((resolve, reject) => {
-    ffmpeg(path.resolve(tempDirectory, file))
-      .output(path.resolve(tempDirectory, outputName))
-      .videoCodec("libx264")
-      .on("end", function () {
-        console.log("conversion ended");
-        resolve(outputName);
-      })
-      .on("error", function (err: any) {
-        console.log("error: ", err);
-        reject(err);
-      })
-      .run();
-  });
-  await new Promise((resolve, reject) => {
-    ffmpeg(path.resolve(tempDirectory, file))
+    ffmpeg(path.resolve(tempDirectory, outputName))
       .screenshots({
         timestamps: ["00:00:01"],
         filename: thumbnailName,
@@ -43,10 +32,29 @@ export const convertFile = async (file: string) => {
       });
   });
   return {
-    outputName,
+    outputName: file,
     thumbnailName,
   };
 };
+async function runCommand(file: string, outputName: string) {
+  const command = `ffmpeg -i ${path.resolve(
+    tempDirectory,
+    file
+  )} -c:v libx264 -preset slow -crf 23 -c:a aac -strict experimental -b:a 128k ${path.resolve(
+    tempDirectory,
+    outputName
+  )}`;
+  try {
+    const { stdout, stderr } = await exec(command);
+
+    console.log(`stdout: ${stdout}`);
+    if (stderr) {
+      console.log(`stderr: ${stderr}`);
+    }
+  } catch (error: any) {
+    console.error(`error: ${error.message}`);
+  }
+}
 
 export const folderGuard = () => {
   if (!fs.existsSync(tempDirectory)) {

@@ -125,10 +125,8 @@ app.post("/api/upload-video", async (req, res) => {
       req.body.file,
       req.body.extension
     )) as string;
-
     const videoData = await convertFile(downloadedFile);
     console.log("converting done");
-
     const fbFileUrl = await uploadFileToFirebase(
       videoData.outputName,
       req.body.eventId
